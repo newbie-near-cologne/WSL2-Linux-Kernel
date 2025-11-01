@@ -24,13 +24,13 @@ jobs:
           make modules_install INSTALL_MOD_PATH=./modules
 
       - name: Upload kernel artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: vmlinux
           path: vmlinux
 
       - name: Upload modules artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: modules
           path: modules/
