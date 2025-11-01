@@ -1,0 +1,36 @@
+name: Build WSL2 Kernel
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: sudo apt update && sudo apt install -y build-essential flex bison libssl-dev libelf-dev bc
+
+      - name: Configure kernel
+        run: |
+          cp arch/x86/configs/config-wsl .config
+          yes "" | make oldconfig
+
+      - name: Build kernel and modules
+        run: |
+          make -j$(nproc)
+          make modules_install INSTALL_MOD_PATH=./modules
+
+      - name: Upload kernel artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vmlinux
+          path: vmlinux
+
+      - name: Upload modules artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: modules
+          path: modules/
